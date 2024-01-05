@@ -120,3 +120,21 @@ def evaluate(model, data_loader, device):
     coco_evaluator.summarize()
     torch.set_num_threads(n_threads)
     return coco_evaluator
+
+# 训练一个epoch
+if __name__ == "__main__":
+    from train import get_args_parser,get_dataset
+    from utils import collate_fn
+    from torchvision.models.detection import MaskRCNN_ResNet50_FPN_Weights
+    from torchvision.models.detection import fasterrcnn_resnet50_fpn, FasterRCNN_ResNet50_FPN_Weights
+    args = get_args_parser().parse_args()
+    dataset,classes = get_dataset(is_train=False,args=args)
+    kwargs = {"trainable_backbone_layers": args.trainable_backbone_layers}
+    model = torchvision.models.get_model(args.model,weights=args.weights,weights_backbone=args.weights_backbone, num_classes=91,**kwargs)
+    # model = fasterrcnn_resnet50_fpn(weights = FasterRCNN_ResNet50_FPN_Weights.DEFAULT)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device=device)
+    parameters = [p for p in model.parameters() if p.requires_grad]
+    optimizer = torch.optim.AdamW(parameters, lr=args.lr, weight_decay=args.weight_decay)
+    data_loader = torch.utils.data.DataLoader(dataset,batch_size=2,num_workers=args.workers,collate_fn=collate_fn)
+    train_one_epoch(model=model,optimizer=optimizer,data_loader=data_loader,device=device,epoch=1,print_freq=5)
