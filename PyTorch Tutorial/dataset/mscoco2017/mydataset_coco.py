@@ -18,10 +18,10 @@ class coco_dataset(Dataset):
         self.transforms = transforms
         self.annotations = os.path.join(root,'annotations_trainval2017/annotations')
         if train:
-            self.coco_images = os.path.join(root,'train2017/train2017')
+            self.coco_images = os.path.join(root,'train2017')
             self.coco_annotations = os.path.join(self.annotations,'instances_train2017.json')
         else:
-            self.coco_images = os.path.join(root, 'val2017/val2017')
+            self.coco_images = os.path.join(root, 'val2017')
             self.coco_annotations = os.path.join(self.annotations,'instances_val2017.json')
         assert os.path.exists(self.coco_annotations),f'{self.coco_annotations} is not exist!'
 
@@ -85,7 +85,7 @@ def show(image,labels,cats_dict):
 if __name__ == "__main__":
     root = 'E:/jupyter/PyTorch Tutorial/dataset/mscoco2017'
     coco_dataset_val = coco_dataset(root=root,train=False)
-    image,target = coco_dataset_val.__getitem__(1000)
+    image,target = coco_dataset_val[1000]
     # print(image)
     for item in target.items():
         print(item)
