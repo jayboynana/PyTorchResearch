@@ -23,8 +23,8 @@ class Triangle(object):
 def main():
     a,b,c = 3,4,5
     # 静态方法和类方法都是通过给类发消息来调用的
-    if Triangle.is_valid_triangle(a,b,c):
-        t = Triangle(a,b,c)
+    if Triangle.is_valid_triangle(a, b, c):
+        t = Triangle(a, b, c)
         print(t.perimeter())
         print(t.area())
     else:

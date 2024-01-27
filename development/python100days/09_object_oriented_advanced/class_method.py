@@ -1,6 +1,7 @@
 from time import time, localtime, sleep
 
 class Clock(object):
+
     def __init__(self, hour=0, minute=0, second=0):
         self._hour = hour
         self._minute = minute
@@ -11,7 +12,7 @@ class Clock(object):
     @classmethod
     def now(cls):
         ctime = localtime(time())
-        return cls(ctime.tm_hour,ctime.tm_min,ctime.tm_sec) # 可以创建出对象
+        return cls(ctime.tm_hour,ctime.tm_min,ctime.tm_sec)  # 可以创建对象
 
     def run(self):
         self._second += 1
