@@ -177,6 +177,8 @@ class Block(nn.Module):
         x = x + self.drop_path(self.attn(self.norm1(x)))
         x = x + self.drop_path(self.MLP(self.norm2(x)))
 
+        return x
+
 class VisionTransformer(nn.Module):
 
     """
@@ -190,10 +192,11 @@ class VisionTransformer(nn.Module):
                  drop_ratio=0.,attn_drop_ratio=0., drop_path_ratio=0., embed_layer=PatchEmbed,
                  norm_layer=None, act_layer=None):
 
+        super(VisionTransformer, self).__init__()
         self.num_classes = num_classes
         self.num_features = self.embed_dim = embed_dim
-        self.tokens = 2 if distilled else 1
-        norm_layer = norm_layer or partial(norm_layer,eps = 1e-6)
+        self.num_tokens = 2 if distilled else 1
+        norm_layer = norm_layer or partial(nn.LayerNorm, eps=1e-6)
         act_layer = act_layer or nn.GELU
 
         self.patch_embed = embed_layer(image_size=img_size,patch_size=patch_size,in_channels=in_c,
@@ -202,7 +205,7 @@ class VisionTransformer(nn.Module):
 
         self.cls_token = nn.Parameter(torch.zeros(1,1,embed_dim))
         self.dist_token = nn.Parameter(torch.zeros(1, 1, embed_dim)) if distilled else None
-        self.pos_embed = nn.Parameter(torch.zeros(1,num_patches+self.tokens,embed_dim))
+        self.pos_embed = nn.Parameter(torch.zeros(1,num_patches+self.num_tokens,embed_dim))
         self.pos_drop = nn.Dropout(drop_ratio)
 
         dpr = [x.item() for x in torch.linspace(0,drop_path_ratio,depth)]
@@ -306,6 +309,17 @@ def vit_base_patch16_224(num_classes: int = 1000):
         num_classes=num_classes
     )
 
+    return model
+
+def vit_base_patch16_224_in21k(num_classes: int = 21843, has_logits: bool = True):
+
+    model = VisionTransformer(img_size=224,
+                              patch_size=16,
+                              embed_dim=768,
+                              depth=12,
+                              num_heads=12,
+                              representation_size=768 if has_logits else None,
+                              num_classes=num_classes)
     return model
 
 

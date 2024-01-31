@@ -2,7 +2,7 @@ import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
-class mydataset(Dataset):
+class Mydataset(Dataset):
     """
     Custom own dataset
     """
