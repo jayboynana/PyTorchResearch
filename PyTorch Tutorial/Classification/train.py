@@ -8,7 +8,8 @@ import torch.optim.lr_scheduler as lr_scheduler
 from torchvision import transforms
 from myutils import read_split_data
 from mydataset import Mydataset
-from ViT import vit_base_patch16_224_in21k
+from model.vit_model import vit_base_patch16_224_in21k
+# from ViT import vit_base_patch16_224_in21k
 from engine import train_one_epoch,evaluate
 
 def get_args_parser():
@@ -24,7 +25,8 @@ def get_args_parser():
     parser.add_argument('--model_name', default='', help='create model name')
 
     # 预训练权重路径，如果不想载入就设置为空字符
-    parser.add_argument('--weights', type=str, default='../deep-learning-for-image-processing-pytorch/vision_transformer/jx_vit_base_patch16_224_in21k-e5005f0a.pth',
+    parser.add_argument('--weights', type=str,
+                        default='.checkpoints/jx_vit_base_patch16_224_in21k-e5005f0a.pth',
                         help='initial weights path')
     # 是否冻结权重
     parser.add_argument('--freeze-layers', type=bool, default=True)
@@ -92,6 +94,8 @@ def main(args):
             else:
                 print("training {}".format(name))
 
+    loss_function = torch.nn.CrossEntropyLoss()
+
     pg = [p for p in model.parameters() if p.requires_grad]
     optimizer = optim.SGD(pg, lr=args.lr, momentum=0.9, weight_decay=5E-5)
 
@@ -99,12 +103,12 @@ def main(args):
     scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)
 
     info = defaultdict(list)
-    info['train_loss'] = []
-    info['train_acc'] = []
-    info['val_loss'] = []
-    info['val_acc'] = []
+    for i in ['train_loss','train_acc','val_loss','val_acc']:
+        info[i] = []
+
     for epoch in range(args.epochs):
         train_loss, train_acc = train_one_epoch(model=model,
+                                                loss_function = loss_function,
                                                 optimizer=optimizer,
                                                 data_loader=train_loader,
                                                 device=device,
@@ -113,14 +117,15 @@ def main(args):
         scheduler.step()
 
         val_loss, val_acc = evaluate(model=model,
+                                     loss_function = loss_function,
                                      data_loader=val_loader,
                                      device=device,
                                      epoch=epoch)
 
-        info['train_loss'].append(train_loss)
-        info['train_acc'].append(train_acc)
-        info['val_loss'].append(val_loss)
-        info['val_acc'].append(val_acc)
+        info['train_loss'].append(round(train_loss,2))
+        info['train_acc'].append(round(train_acc,2))
+        info['val_loss'].append(round(val_loss,2))
+        info['val_acc'].append(round(val_acc,2))
 
         print(info)
 
