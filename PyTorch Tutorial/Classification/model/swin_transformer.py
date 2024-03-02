@@ -26,10 +26,10 @@ class PatchEmbed(nn.Module):
             x = F.pad(x, (0,self.patch_size[1] - W % self.patch_size[1],
                           0,self.patch_size[0] - H % self.patch_size[0]))
         x = self.proj(x)
-        _,_H,W = x.shape
+        _,_,H,W = x.shape
         # flatten: [B, C, H, W] -> [B, C, HW]
         # transpose: [B, C, HW] -> [B, HW, C]
-        x = x.flatten(1).transpose(1,2)
+        x = x.flatten(2).transpose(1,2)
         x = self.norm(x)
 
         return x

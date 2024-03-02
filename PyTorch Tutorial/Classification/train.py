@@ -21,12 +21,12 @@ def get_args_parser():
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--lrf', type=float, default=0.01)
 
-    parser.add_argument('--data',type=str,default='E:/PyTorchProject/PyTorch Tutorial/Classification/flower_photos',help='path to dataset')
+    parser.add_argument('--data',type=str,default='./flower_photos',help='path to dataset')
     parser.add_argument('--model_name', default='', help='create model name')
 
     # 预训练权重路径，如果不想载入就设置为空字符
     parser.add_argument('--weights', type=str,
-                        default='.checkpoints/jx_vit_base_patch16_224_in21k-e5005f0a.pth',
+                        default='./checkpoints/jx_vit_base_patch16_224_in21k-e5005f0a.pth',
                         help='initial weights path')
     # 是否冻结权重
     parser.add_argument('--freeze-layers', type=bool, default=True)
