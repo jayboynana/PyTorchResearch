@@ -8,9 +8,8 @@ import torch.optim.lr_scheduler as lr_scheduler
 from torchvision import transforms
 from myutils import read_split_data
 from mydataset import Mydataset
-from model.vit_model import vit_base_patch16_224_in21k
-# from ViT import vit_base_patch16_224_in21k
 from engine import train_one_epoch,evaluate
+# from ..model import swin_transformer as model
 
 def get_args_parser():
 
@@ -26,7 +25,7 @@ def get_args_parser():
 
     # 预训练权重路径，如果不想载入就设置为空字符
     parser.add_argument('--weights', type=str,
-                        default='./checkpoints/jx_vit_base_patch16_224_in21k-e5005f0a.pth',
+                        default='',
                         help='initial weights path')
     # 是否冻结权重
     parser.add_argument('--freeze-layers', type=bool, default=True)
@@ -38,8 +37,8 @@ def main(args):
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
 
-    if os.path.exists("./weights") is False:
-        os.makedirs("./weights")
+    if os.path.exists("weights") is False:
+        os.makedirs("weights")
 
     train_images_path, train_images_label, val_images_path, val_images_label = read_split_data(args.data)
 
@@ -74,22 +73,25 @@ def main(args):
                                              num_workers=nw,
                                              collate_fn=val_dataset.collate_fn)
 
-    model = vit_base_patch16_224_in21k(num_classes=args.num_classes,has_logits=False).to(device)
+    try:
+        from swin_transformer import swin_tiny_patch4_window7_224
+        model = swin_tiny_patch4_window7_224(num_classes=args.num_classes,has_logits=False).to(device)
+    except:
+        raise ImportError('There is no swin model !!!')
 
     if args.weights != "":
         assert os.path.exists(args.weights), "weights file: '{}' not exist.".format(args.weights)
-        weights_dict = torch.load(args.weights, map_location=device)
-        # 删除不需要的权重
-        del_keys = ['head.weight', 'head.bias'] if model.has_logits \
-            else ['pre_logits.fc.weight', 'pre_logits.fc.bias', 'head.weight', 'head.bias']
-        for k in del_keys:
-            del weights_dict[k]
+        weights_dict = torch.load(args.weights, map_location=device)["model"]
+        # 删除有关分类类别的权重
+        for k in list(weights_dict.keys()):
+            if "head" in k:
+                del weights_dict[k]
         print(model.load_state_dict(weights_dict, strict=False))
 
     if args.freeze_layers:
         for name, para in model.named_parameters():
-            # 除head, pre_logits外，其他权重全部冻结
-            if "head" not in name and "pre_logits" not in name:
+            # 除head外，其他权重全部冻结
+            if "head" not in name:
                 para.requires_grad_(False)
             else:
                 print("training {}".format(name))

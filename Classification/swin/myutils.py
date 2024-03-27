@@ -16,7 +16,7 @@ def read_split_data(root,val_rate = 0.2):
     indices_classes = dict((k,v) for v,k in classes_indices.items())
 
     json_classes = json.dumps(indices_classes,indent=4)
-    with open('indices2classes.json','w') as json_file:
+    with open('indices2classes.json', 'w') as json_file:
         json_file.write(json_classes)
 
     train_images_path = []

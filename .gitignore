@@ -3,8 +3,8 @@
 /dataset/mscoco2017/val2017/
 /dataset/VOCtrainval_11-May-2012/
 
-/PyTorch Tutorial/Classification/flower_photos/
+/Classification/flower_photos/
 /PyTorch Tutorial/PyTorch official/TorchVision Object Detection Finetuning Tutorial/PennFudanPed/
 /PyTorch Tutorial/PyTorch official/Training a Classifier on CIFAR10/CIFAR10/
 /PyTorch Tutorial/PyTorch official/Training a Classifier on CIFAR10/cifar_net.pth
-/PyTorch Tutorial/Classification/flower_photos.tgz
+/Classification/flower_photos.tgz
