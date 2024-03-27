@@ -226,7 +226,7 @@ if __name__ == '__main__':
     }
 
     # load train data set
-    voc_root = 'E:/jupyter/PyTorch Tutorial/dataset/VOCtrainval_11-May-2012'
+    voc_root = 'E:/jupyter/PyTorch_Tutorial/dataset/VOCtrainval_11-May-2012'
     train_data_set = VOCDataSet(voc_root, "2012", data_transform["train"], "train.txt")
     print(len(train_data_set))
     for index in random.sample(range(0, len(train_data_set)), k=5):

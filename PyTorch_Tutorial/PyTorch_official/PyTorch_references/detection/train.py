@@ -75,7 +75,7 @@ def get_args_parser(add_help=True):
 
     parser = argparse.ArgumentParser(description="PyTorch Detection Training", add_help=add_help)
 
-    parser.add_argument("--data-path", default="E:/jupyter/PyTorch Tutorial/dataset/mscoco2017", type=str, help="dataset path")
+    parser.add_argument("--data-path", default="E:/jupyter/PyTorch_Tutorial/dataset/mscoco2017", type=str, help="dataset path")
     parser.add_argument(
         "--dataset",
         default="coco",

@@ -75,7 +75,7 @@ def plot_data_loader_image(data_loader):
 
 
 if __name__ == "__main__":
-    flowers_path = 'E:/jupyterlab/PyTorch Tutorial/Classification/flower_photos'
+    flowers_path = 'E:/jupyterlab/PyTorch_Tutorial/Classification/flower_photos'
     train_images_path,train_images_label,val_images_path,val_images_label = read_split_data(flowers_path)
 
 

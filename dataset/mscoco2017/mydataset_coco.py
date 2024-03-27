@@ -83,7 +83,7 @@ def show(image,labels,cats_dict):
     plt.show()
 
 if __name__ == "__main__":
-    root = 'E:/pythonProject/PyTorch Tutorial/dataset/mscoco2017'
+    root = 'E:/pythonProject/PyTorch_Tutorial/dataset/mscoco2017'
     coco_dataset_val = coco_dataset(root=root,train=False)
     image,target = coco_dataset_val[1000]
     # print(image)
